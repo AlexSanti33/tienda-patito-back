@@ -52,14 +52,7 @@ public class PedidoApi {
 	@PutMapping("{id}")
 	private ResponseEntity<?> updateEstatus(@RequestBody Pedido pedido,@PathVariable Long id){
 		
-		var pedidoActualizado = pedidoService.updateStatus(id,pedido);
-		
-		if(Objects.isNull(pedidoActualizado)) {
-			return ResponseEntity.badRequest().body("Error al cancelar pedido");
-		}
-		
-		return ResponseEntity.ok(pedido);
-		
+		return ResponseEntity.ok(pedidoService.updateStatus(id,pedido));
 		
 	}
 	

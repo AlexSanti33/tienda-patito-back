@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "empleado_id",referencedColumnName = "id")
+    private Empleado empleado;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -39,7 +39,7 @@ public class AuthenticationApi {
 
 	        String jwtToken = jwtService.generateToken(authenticatedUser);
 
-	        LoginResponse loginResponse = new LoginResponse().builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).build();
+	        LoginResponse loginResponse = new LoginResponse().builder().token(jwtToken).expiresIn(jwtService.getExpirationTime()).empleado(authenticatedUser.getEmpleado()).build();
 
 	        return ResponseEntity.ok(loginResponse);
 	    }
