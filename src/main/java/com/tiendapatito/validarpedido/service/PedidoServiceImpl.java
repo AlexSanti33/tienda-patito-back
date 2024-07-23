@@ -60,7 +60,7 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 
 	@Override
-	public Pedido updateStatus(Long id,Pedido pedido) {
+	public Pedido updateStatus(Long id,Pedido pedido) throws NoSuchElementException  {
 
 		log.info("Cancelando pedido");
 		Pedido pedidoDb=	pedidoRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No se encontro el pedido"));
@@ -73,8 +73,7 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoRepository.save(pedidoDb);
 		}else {
 			log.error("No se pudo cancelar el pedido");
-			new NoSuchElementException("Ya pasaron mas de 10 min");
-			return null;
+			throw new NoSuchElementException("Ya pasaron mas de 10 min");
 		}
 		
 		return pedidoDb;
