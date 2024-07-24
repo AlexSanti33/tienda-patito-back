@@ -35,20 +35,6 @@ public class PedidoApi {
 		return ResponseEntity.ok(pedidoService.save(pedido));
 	}
 	
-	@PostMapping("/cancelar")
-	private ResponseEntity<?> updateEstatus(@RequestBody Pedido pedido){
-		
-		var pedidoActualizado = pedidoService.updateStatus(pedido.getId(),pedido);
-		
-		if(Objects.isNull(pedidoActualizado)) {
-			return ResponseEntity.badRequest().body("Error al cancelar pedido");
-		}
-		
-		return ResponseEntity.ok(pedido);
-		
-		
-	}
-	
 	@PutMapping("{id}")
 	private ResponseEntity<?> updateEstatus(@RequestBody Pedido pedido,@PathVariable Long id){
 		

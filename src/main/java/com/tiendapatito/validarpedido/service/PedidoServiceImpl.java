@@ -29,7 +29,12 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	public Pedido save(Pedido pedido) {
 		log.info("Guardando pedido");
-		pedido.getItems().stream().forEach(item-> item.setPedido(pedido));
+		pedido.getItems().stream().forEach(item-> {
+			item.setPedido(pedido);
+			if(item.getCantidad() > item.getProducto().getInventario().getExistenciaActual()) {
+				throw new IllegalArgumentException("Existencia menor a cantidad de pedido");
+			}
+		});
 		pedido.setFechaEvento(LocalDateTime.now());
 		var pedidoCreado = pedidoRepository.save(pedido);
 		if(Objects.nonNull(pedidoCreado)) {
@@ -50,9 +55,8 @@ public class PedidoServiceImpl implements PedidoService {
 	private void actualizarInventario(Pedido pedido) {
 		log.info("Actualizando stock de productos");
 		var inventariosActualizados = pedido.getItems().stream().map(x->{
-			var inventario = inventarioRepository.findByProducto(x.getProducto());
-			inventario.setExistenciaActual(inventario.getExistenciaActual()-x.getCantidad());
-			return inventario;
+			x.getProducto().getInventario().setExistenciaActual(x.getProducto().getInventario().getExistenciaActual()-x.getCantidad());
+			return x.getProducto().getInventario();
 		}).collect(Collectors.toList());
 		
 		if( Objects.nonNull(inventariosActualizados)&& !inventariosActualizados.isEmpty())
@@ -73,7 +77,7 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoRepository.save(pedidoDb);
 		}else {
 			log.error("No se pudo cancelar el pedido");
-			throw new NoSuchElementException("Ya pasaron mas de 10 min");
+			throw new IllegalArgumentException("Ya pasaron mas de 10 min");
 		}
 		
 		return pedidoDb;
