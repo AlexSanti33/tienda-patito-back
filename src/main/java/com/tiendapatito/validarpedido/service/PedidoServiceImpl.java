@@ -55,8 +55,9 @@ public class PedidoServiceImpl implements PedidoService {
 	private void actualizarInventario(Pedido pedido) {
 		log.info("Actualizando stock de productos");
 		var inventariosActualizados = pedido.getItems().stream().map(x->{
-			x.getProducto().getInventario().setExistenciaActual(x.getProducto().getInventario().getExistenciaActual()-x.getCantidad());
-			return x.getProducto().getInventario();
+			var inventario = inventarioRepository.findByProducto(x.getProducto());
+			inventario.setExistenciaActual(inventario.getExistenciaActual()-x.getCantidad());
+			return inventario;
 		}).collect(Collectors.toList());
 		
 		if( Objects.nonNull(inventariosActualizados)&& !inventariosActualizados.isEmpty())
@@ -77,7 +78,7 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoRepository.save(pedidoDb);
 		}else {
 			log.error("No se pudo cancelar el pedido");
-			throw new IllegalArgumentException("Ya pasaron mas de 10 min");
+			throw new NoSuchElementException("Ya pasaron mas de 10 min");
 		}
 		
 		return pedidoDb;
