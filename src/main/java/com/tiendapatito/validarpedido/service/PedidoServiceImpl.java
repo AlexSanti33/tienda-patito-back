@@ -70,7 +70,7 @@ public class PedidoServiceImpl implements PedidoService {
 		log.info("Cancelando pedido");
 		Pedido pedidoDb=	pedidoRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No se encontro el pedido"));
 		
-		LocalDateTime now = LocalDateTime.now().minusMinutes(10);
+		LocalDateTime now = LocalDateTime.now().minusSeconds(30);
 		
 		if(pedidoDb.getFechaEvento().isAfter(now)) {
 			pedidoDb.setEstatusPedido(pedido.getEstatusPedido());
